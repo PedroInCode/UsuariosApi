@@ -9,20 +9,22 @@ namespace UsuariosApi.Service;
 /// Camada de serviço responsável por orquestrar e isolar as regras de negócio 
 /// relativas ao processo de cadastro de novos usuários.
 /// </summary>
-public class CadastroService
+public class UsuarioService
 {
     private readonly IMapper _mapper;
     private readonly UserManager<Usuario> _userManager;
+    private readonly SignInManager<Usuario> _signInManager;
 
     /// <summary>
     /// Construtor que recebe as dependências necessárias via Injeção de Dependência.
     /// </summary>
     /// <param name="mapper">Instância do AutoMapper para conversão de DTOs em Entidades.</param>
     /// <param name="userManager">Gerenciador nativo do ASP.NET Core Identity para criação e gerenciamento de usuários no banco de dados.</param>
-    public CadastroService(IMapper mapper, UserManager<Usuario> userManager)
+    public UsuarioService(IMapper mapper, UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
     {
         _mapper = mapper;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     /// <summary>
@@ -44,5 +46,20 @@ public class CadastroService
         {
             throw new ApplicationException("Falha ao cadastrar usuário!");
         }
+    }
+
+    /// <summary>
+    /// Realiza a autenticação (login) do usuário no sistema verificando usuário e senha.
+    /// </summary>
+    /// <param name="dto">Credenciais de acesso (Username e Password).</param>
+    /// <exception cref="ApplicationException">Lançada caso as credenciais sejam inválidas.</exception>
+    public async Task Login(LoginUsuarioDto dto)
+    {
+        // O 3º parâmetro (isPersistent) indica se o login deve persistir em cookie após fechar o navegador (false).
+        // O 4º parâmetro (lockoutOnFailure) indica se deve bloquear a conta após tentativas erradas (false).
+        var resultado = await _signInManager.PasswordSignInAsync(dto.UserName, dto.Password, false, false);
+
+        if (!resultado.Succeeded)
+            throw new ApplicationException("Usuário não autenticado!");
     }
 }

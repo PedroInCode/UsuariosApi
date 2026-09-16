@@ -12,26 +12,36 @@ namespace UsuariosApi.Controllers;
 [Route("[Controller]")]
 public class UsuarioController : ControllerBase
 {
-    private readonly CadastroService _cadastroService;
+    private readonly UsuarioService _usuarioService;
 
     /// 
     /// Construtor que recebe as dependências via injeção de dependência.
     /// 
     /// Serviço encarregado do fluxo e regras de cadastro de usuários.
-    public UsuarioController(CadastroService cadastroService)
+    public UsuarioController(UsuarioService usuarioService)
     {
-        _cadastroService = cadastroService;
+        _usuarioService = usuarioService;
     }
 
-    /// 
-    /// Endpoint responsável pelo cadastro de um novo usuário na aplicação.
-    /// 
-    /// Objeto contendo as informações necessárias para criação do usuário (Username, DataNascimento, Passwords).
-    /// Retorna um HTTP 200 (OK) com uma mensagem de confirmação em caso de sucesso.
-    [HttpPost]
+    /// <summary>
+    /// Endpoint responsável pelo cadastro de um novo usuário.
+    /// Rota: POST /usuario/cadastro
+    /// </summary>
+    [HttpPost("cadastro")]
     public async Task<IActionResult> CadastraUsuario([FromBody] CreateUsuarioDto dto)
     {
-        await _cadastroService.Cadastra(dto);
+        await _usuarioService.Cadastra(dto);
         return Ok("Usuário cadastrado com sucesso!");
+    }
+
+    /// <summary>
+    /// Endpoint responsável pela autenticação de um usuário.
+    /// Rota: POST /usuario/login
+    /// </summary>
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginUsuarioDto dto)
+    {
+        await _usuarioService.Login(dto);
+        return Ok("Usuário autenticado!");
     }
 }
