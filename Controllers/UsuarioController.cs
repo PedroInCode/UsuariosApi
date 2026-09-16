@@ -29,7 +29,7 @@ public class UsuarioController : ControllerBase
     /// Objeto contendo as informações necessárias para criação do usuário (Username, DataNascimento, Passwords).
     /// Retorna um HTTP 200 (OK) com uma mensagem de confirmação em caso de sucesso.
     [HttpPost]
-    public async Task CadastraUsuario([FromBody] CreateUsuarioDto dto)
+    public async Task<IActionResult> CadastraUsuario([FromBody] CreateUsuarioDto dto)
     {
         await _cadastroService.Cadastra(dto);
         return Ok("Usuário cadastrado com sucesso!");
