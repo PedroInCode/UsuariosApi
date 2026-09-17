@@ -68,8 +68,10 @@ public class UsuarioService
         var usuario = _signInManager.
             UserManager.
             Users.
-            FirstOrDefault(user => user.UserName == dto.UserName.ToUpper());
+            FirstOrDefault(user => user.NormalizedUserName == dto.UserName.ToUpper());
 
+        if (usuario == null)
+            throw new ApplicationException("Usuário não encontrado!");
         var token = _tokenService.GenerateToken(usuario);
 
         return token;
