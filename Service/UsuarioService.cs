@@ -56,7 +56,7 @@ public class UsuarioService
     /// </summary>
     /// <param name="dto">Credenciais de acesso (Username e Password).</param>
     /// <exception cref="ApplicationException">Lançada caso as credenciais sejam inválidas.</exception>
-    public async Task Login(LoginUsuarioDto dto)
+    public async Task<string> Login(LoginUsuarioDto dto)
     {
         // O 3º parâmetro (isPersistent) indica se o login deve persistir em cookie após fechar o navegador (false).
         // O 4º parâmetro (lockoutOnFailure) indica se deve bloquear a conta após tentativas erradas (false).
@@ -65,6 +65,13 @@ public class UsuarioService
         if (!resultado.Succeeded)
             throw new ApplicationException("Usuário não autenticado!");
 
-        _tokenService.GenerateToken(usuario);
+        var usuario = _signInManager.
+            UserManager.
+            Users.
+            FirstOrDefault(user => user.UserName == dto.UserName.ToUpper());
+
+        var token = _tokenService.GenerateToken(usuario);
+
+        return token;
     }
 }

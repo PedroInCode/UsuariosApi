@@ -9,14 +9,14 @@ namespace UsuariosApi.Service;
 /// <summary>
 /// Serviço responsável pela geração e validação de Tokens JWT (JSON Web Tokens).
 /// </summary>
-internal class TokenService
+public class TokenService
 {
     /// <summary>
     /// Gera um token JWT assinado contendo as reivindicações (claims) do usuário.
     /// </summary>
     /// <param name="usuario">Entidade do usuário autenticado.</param>
     /// <returns>Uma string representando o Token JWT no formato encoded.</returns>
-    public void GenerateToken(Usuario usuario)
+    public string GenerateToken(Usuario usuario)
     {
         // 1. Dados gravados no "crachá" (Claims)
         Claim[] claims = new Claim[]
@@ -29,7 +29,7 @@ internal class TokenService
 
         // 2. Chave secreta de assinatura (mínimo de 256 bits/32 caracteres para HMAC-SHA256)
         // obs: Como é uma api de estudos, não vou esconder essa chave! 
-        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f"));
+        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f_12345678")); // 32 caracteres 
 
         // 3. Algoritmo de criptografia para assinar o token
         var signingCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
@@ -41,5 +41,7 @@ internal class TokenService
             claims: claims,
             signingCredentials: signingCredentials
             );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

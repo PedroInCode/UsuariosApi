@@ -37,6 +37,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Registra a camada de serviço com ciclo de vida AddScoped (uma instância por requisição HTTP)
 builder.Services.AddScoped<UsuarioService>();
 
+// Registra a camada de serviço com ciclo de vida AddScoped (uma instância por requisição HTTP)
+builder.Services.AddScoped<TokenService>();
+
 // Registra os controllers e a documentação do Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
