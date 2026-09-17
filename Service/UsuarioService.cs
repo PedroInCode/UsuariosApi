@@ -14,17 +14,20 @@ public class UsuarioService
     private readonly IMapper _mapper;
     private readonly UserManager<Usuario> _userManager;
     private readonly SignInManager<Usuario> _signInManager;
+    private readonly TokenService _tokenService;
 
     /// <summary>
     /// Construtor que recebe as dependências necessárias via Injeção de Dependência.
     /// </summary>
     /// <param name="mapper">Instância do AutoMapper para conversão de DTOs em Entidades.</param>
     /// <param name="userManager">Gerenciador nativo do ASP.NET Core Identity para criação e gerenciamento de usuários no banco de dados.</param>
-    public UsuarioService(IMapper mapper, UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
+    public UsuarioService(IMapper mapper, UserManager<Usuario> userManager, 
+        SignInManager<Usuario> signInManager, TokenService tokenService)
     {
         _mapper = mapper;
         _userManager = userManager;
         _signInManager = signInManager;
+        _tokenService = tokenService;
     }
 
     /// <summary>
@@ -61,5 +64,7 @@ public class UsuarioService
 
         if (!resultado.Succeeded)
             throw new ApplicationException("Usuário não autenticado!");
+
+        _tokenService.GenerateToken(usuario);
     }
 }
