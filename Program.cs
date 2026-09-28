@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UsuariosApi.Authorization;
@@ -41,12 +42,20 @@ builder.Services.AddScoped<UsuarioService>();
 // Registra a camada de serviço com ciclo de vida AddScoped (uma instância por requisição HTTP)
 builder.Services.AddScoped<TokenService>();
 
+builder.Services.AddSingleton<IAuthorizationHandler, IdadeAuthorization>();
+
 // Registra os controllers e a documentação do Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthorization(opts => opts.AddPolicy("IdadeMinima", policy => policy.AddRequirements(new IdadeMinima(18))));
+// Adiciona os serviços de autorização à aplicação
+builder.Services.AddAuthorization(opts =>
+// Define uma nova política de acesso chamada "IdadeMinima"
+opts.AddPolicy("IdadeMinima", policy =>
+// Associa o requisito de autorização a esta política,
+// definindo que o valor exigido para acesso é 18 anos.
+policy.AddRequirements(new IdadeMinima(18))));
 
 // ===================================================================================
 // 2. PIPELINE DE REQUISIÇÕES HTTP (Middlewares)
