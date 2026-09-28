@@ -24,7 +24,8 @@ public class TokenService
             new Claim("username", usuario.UserName),
             new Claim("id", usuario.Id),
             new Claim(ClaimTypes.DateOfBirth, 
-            usuario.DataNascimento.ToString())
+            usuario.DataNascimento.ToString()),
+            new Claim("loginTimestamp", DateTime.UtcNow.ToString())
         };
 
         // 2. Chave secreta de assinatura (mínimo de 256 bits/32 caracteres para HMAC-SHA256)
