@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UsuariosApi.Authorization;
 using UsuariosApi.Data;
 using UsuariosApi.Model;
 using UsuariosApi.Service;
@@ -44,6 +45,8 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthorization(opts => opts.AddPolicy("IdadeMinima", policy => policy.AddRequirements(new IdadeMinima(18))));
 
 // ===================================================================================
 // 2. PIPELINE DE REQUISIÇÕES HTTP (Middlewares)
