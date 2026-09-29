@@ -66,7 +66,7 @@ builder.Services.AddAuthentication(opts =>
         ValidateIssuerSigningKey = true,
 
         // Define a chave secreta simétrica (com no mínimo 32 caracteres / 256 bits) usada para validar a assinatura
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f_12345678")),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SymmetricSecurityKey"])),
 
         // Desabilita a validação da Audiência (quem deve consumir o token) por se tratar de um ambiente de estudos
         ValidateAudience = false,

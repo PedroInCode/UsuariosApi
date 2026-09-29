@@ -9,8 +9,15 @@ namespace UsuariosApi.Service;
 /// <summary>
 /// Serviço responsável pela geração e validação de Tokens JWT (JSON Web Tokens).
 /// </summary>
-public class TokenService
+public class TokenService 
 {
+    private IConfiguration _configuration;
+
+    public TokenService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
     /// <summary>
     /// Gera um token JWT assinado contendo as reivindicações (claims) do usuário.
     /// </summary>
@@ -30,7 +37,7 @@ public class TokenService
 
         // 2. Chave secreta de assinatura (mínimo de 256 bits/32 caracteres para HMAC-SHA256)
         // obs: Como é uma api de estudos, não vou esconder essa chave! 
-        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f_12345678")); // 32 caracteres 
+        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SymmetricSecurityKey"])); 
 
         // 3. Algoritmo de criptografia para assinar o token
         var signingCredentials = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
