@@ -52,17 +52,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Registra e configura o serviço de Autenticação da aplicação
 builder.Services.AddAuthentication(opts =>
 {
+    // Define que o esquema padrão de autenticação do sistema será via JWT Bearer (Token)
     opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(opts =>
 {
+    // Define os parâmetros de validação que o servidor usará para checar cada Token recebido
     opts.TokenValidationParameters = new TokenValidationParameters
     {
+        // Exige que a chave de assinatura do Token seja validada para garantir que ele não foi adulterado
         ValidateIssuerSigningKey = true,
+
+        // Define a chave secreta simétrica (com no mínimo 32 caracteres / 256 bits) usada para validar a assinatura
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9ASHDA98H9ah9ha9H9A89n0f_12345678")),
+
+        // Desabilita a validação da Audiência (quem deve consumir o token) por se tratar de um ambiente de estudos
         ValidateAudience = false,
+
+        // Desabilita a validação do Emissor (quem gerou o token) por se tratar de um ambiente de estudos
         ValidateIssuer = false,
+
+        // Zera a margem de tolerância do relógio para expiração (por padrão o .NET dá 5 min extra; zerando, o token expira na hora)
         ClockSkew = TimeSpan.Zero
     };
 });
@@ -89,7 +101,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+// Habilita o "segurança" da aplicação: intercepta as requisições e descobre QUEM é o usuário através do Token
 app.UseAuthentication();
+
+// Habilita as regras de autorização: decide O QUE o usuário autenticado pode ou não acessar
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
